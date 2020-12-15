@@ -8,6 +8,7 @@ Sub VBAWALLSTREET_HomeWork_Tony_Main()
 'The Program running about several minutes depending on pc capacity.
 'The Document to be dealt with is "02-Homework_02-VBA-Scripting_Instructions_Resources_Multiple_year_stock_data"
 'My script can run on any docs with the same data sheet format.
+'15/12/2020 submitted through: https://github.com/tonyzhao668/VBA_Challenge
 
 
 Sub VBAWALLSTREET_HomeWork_Tony_Main()
