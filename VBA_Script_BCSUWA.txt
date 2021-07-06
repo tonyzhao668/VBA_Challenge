@@ -1,0 +1,221 @@
+
+Sub VBAWALLSTREET_Tony_Main()
+
+'10/12/2020 by BCSUWA_Tony_Zhao
+'Three ScreenShots attached to show the yearly results
+'Thank you for your review and comments
+'Sorry for left Collumn ("J") blank in between, which was used for intermidiate results storage.
+'The Program running about several minutes depending on pc capacity.
+'The Document to be dealt with is "VBA-Scripting_Instructions_Resources_Multiple_year_stock_data"
+'My script can run on any docs with the same data sheet format.
+'15/12/2020 submitted through: https://github.com/tonyzhao668/VBA_Challenge
+
+
+Sub VBAWALLSTREET_Tony_Main()
+'10/12/2020 by BCSUWA_Tony_Zhao
+
+Dim ws As Worksheet
+Dim starting_ws As Worksheet
+Dim rng As Range
+Set starting_ws = ActiveSheet 'remember which worksheet is active in the beginning
+Set rng = Range("J1:K450")
+ rng.FormatConditions.Delete
+
+For Each ws In ThisWorkbook.Worksheets
+    ws.Activate
+    LastRowInOneColumn
+    SortTicker
+    TickersLastRow
+    TickerRowCounter
+    CollumnLabelMaking
+    Calc_Change_Cp_TVol
+    formatting
+    
+Next
+
+For Each ws In ThisWorkbook.Worksheets
+    ws.Activate
+    Max_Min_Change_Label_Data
+    ws.Range("H1:H20").ClearContents
+    ws.Range("J1:J450").ClearContents
+Next
+
+starting_ws.Activate 'activate the worksheet that was originally active
+
+End Sub
+
+Sub LastRowInOneColumn()
+
+    'Find the last used row in Column A
+ Dim LastRow As Long
+ With ActiveSheet
+  LastRow = .Cells(.Rows.Count, "A").End(xlUp).Row
+ End With
+ Cells(2, 8).Value = LastRow
+    
+End Sub
+
+Sub SortTicker()
+  Dim t_range As Range
+  
+  Range("A:A").Copy Range("I:I")
+  
+  Set t_range = Range(Cells(2, 9), Cells(Cells(2, 8).Value, 9))
+  
+  t_range.Sort Key1:=Range("I1"), Order1:=xlAscending, Header:=xlYes
+  Columns("I").RemoveDuplicates Columns:=Array(1)
+
+End Sub
+
+Sub TickersLastRow()
+
+ 'Find the last used row in Column I
+    Dim LastRow As Double
+    LastRow = 0
+    With ActiveSheet
+        LastRow = .Cells(.Rows.Count, "I").End(xlUp).Row
+    End With
+    Cells(3, 8).Value = LastRow
+    'MsgBox LastRow
+    
+End Sub
+
+Sub TickerRowCounter()
+    
+    Dim Myrange As Range
+    Dim i As Double
+    
+    Set Myrange = Range(Cells(2, 1), Cells(Cells(2, 8).Value, 1))
+    
+    For i = 2 To Cells(3, 8).Value
+    
+    Cells(i, 10).Value = WorksheetFunction.CountIf(Myrange, Cells(i, 9).Value)
+    
+    Next
+  
+End Sub
+Sub CollumnLabelMaking()
+    
+    Cells(1, 10).Value = "Tk Traded"
+    Cells(1, 11).Value = "Year Change"
+    Cells(1, 12).Value = "Percent Change"
+    Cells(1, 13).Value = "Total Stock Volume"
+    
+End Sub
+Sub Calc_Change_Cp_TVol()
+
+Dim i As Double
+Dim j As Double
+Dim m As Integer
+Dim G_Index As Double
+Dim Start As Double
+Dim Change As Double
+  
+ G_Index = 1
+ Start = 2
+ 
+ For m = 2 To Cells(3, 8).Value
+    
+    j = 0
+    
+    G_Index = G_Index + Cells(m, 10).Value
+    
+    Change = Cells(G_Index, 6).Value - Cells(Start, 6).Value
+    Cells(m, 11).Value = Change
+    If Cells(Start, 6).Value <> 0 Then
+        Cells(m, 12).Value = Format(Change / Cells(Start, 6).Value, "Percent")
+    Else
+        Cells(m, 12).Value = 0.01 'to deal with dividing by 0
+    End If
+    
+    For i = Start To G_Index
+        j = j + Cells(i, 7).Value
+        Next
+    
+    Start = G_Index + 1
+    Cells(m, 13).Value = j
+    Next
+    
+End Sub
+
+Sub Max_Min_Change_Label_Data()
+
+Dim i As Double
+Dim pmax As Double
+Dim pmin As Double
+Dim vmax As Double
+Dim pmaxrow As Double
+Dim pminrow As Double
+Dim vmaxrow As Double
+
+    pmax = 0
+    pmin = 0
+    vmax = 0
+    pmaxrow = 0
+    pminrow = 0
+    vmaxrow = 0
+    
+    For i = 2 To Cells(3, 8).Value
+        If Cells(i, 12).Value > pmax Then
+            pmax = Cells(i, 12).Value
+            pmaxrow = i
+        ElseIf Cells(i, 12).Value < pmin Then
+            pmin = Cells(i, 12).Value
+            pminrow = i
+        ElseIf Cells(i, 13).Value > vmax Then
+            vmax = Cells(i, 13).Value
+            vmaxrow = i
+        End If
+        Next
+
+Cells(2, 16).Value = "Greatest % Inc."
+Cells(3, 16).Value = "Greatest % Dec."
+Cells(4, 16).Value = "Greatest T. Vol."
+Cells(1, 17).Value = "Ticker"
+Cells(1, 18).Value = "Value"
+
+Cells(2, 18).Value = Format(pmax, "Percent")
+Cells(3, 18).Value = Format(pmin, "Percent")
+Cells(4, 18).Value = Format(vmax, "Scientific")
+Cells(2, 17).Value = Cells(pmaxrow, 9).Value
+Cells(3, 17).Value = Cells(pminrow, 9).Value
+Cells(4, 17).Value = Cells(vmaxrow, 9).Value
+
+End Sub
+
+Sub formatting()
+
+  Dim rng As Range
+  Dim condition1 As FormatCondition, condition2 As FormatCondition
+
+  Set rng = Range(Cells(2, 11), Cells(Cells(3, 8).Value, 11))
+
+  rng.FormatConditions.Delete
+
+  Set condition1 = rng.FormatConditions.Add(xlCellValue, xlGreater, "=0")
+  Set condition2 = rng.FormatConditions.Add(xlCellValue, xlLessEqual, "=0")
+  
+  With condition1
+    .Interior.Color = vbGreen
+    .Font.Color = vbBlack
+  End With
+  
+  With condition2
+    .Interior.Color = vbRed
+    .Font.Color = vbBlack
+  End With
+  
+  'Application.CutCopyMode = False
+  
+End Sub
+
+
+
+
+
+
+
+
+
+
+
