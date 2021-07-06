@@ -5,7 +5,7 @@
 
 Use VBA scripting to analyze real stock market data. 
 
-### Files
+### Files (not included due to too big files)
 
 * [Test Data](Resources/alphabetical_testing.xlsx) - Use this while developing scripts.
 
@@ -46,14 +46,13 @@ Use VBA scripting to analyze real stock market data.
 
 ### Result for yesr 2014
 
-
-![Result 2014](images/result2014.PNG)
+![Result 2014](Images/result2014.PNG)
 
 ### Result for yesr 2015
 
-![Result 2015](images/result2015.PNG)
+![Result 2015](Images/result2015.PNG)
 
 ### Result for yesr 2016
 
-![Result 2016](images/result2016.PNG)
+![Result 2016](Images/result2016.PNG)
 
