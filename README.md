@@ -46,13 +46,13 @@ Use VBA scripting to analyze real stock market data.
 
 ### Result for yesr 2014
 
-![Result_2014](Images/screenshot2014.PNG)
+![Result 2014](Images/screenshot2014.PNG)
 
 ### Result for yesr 2015
 
-![Result_2015](Images/screenshot2015.PNG)
+![Result 2015](Images/screenshot2015.PNG)
 
 ### Result for yesr 2016
 
-![Result_2016](Images/screenshot2016.PNG)
+![Result 2016](Images/screenshot2016.PNG)
 
